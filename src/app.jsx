@@ -1,37 +1,53 @@
+// get windows
+// seperate by window
+// add events
+// close tab
+// switch to tab - http://stackoverflow.com/questions/16276276/chrome-extension-select-next-tab
+// create group
+// save group
+
 var React = require('react');
 
-var Tab = React.createClass({
-    getInitialState: function() {
-        return {id: '', url: '', link: ''};
-    },
-
+var Window = React.createClass({
     render: function() {
-        return <div>Hello</div>;
+        return <li></li>;
+    }
+});
+
+var Tab = React.createClass({
+    render: function() {
+        return <li id={this.props.id}>{this.props.title}</li>;
     }
 });
 
 var TabList = React.createClass({
+
     getInitialState: function() {
-        return {
-            windows: [],
-            tabs: []
-        };
+        return {windows: [], tabs: []};
     },
 
     getAllTabs: function()
     {
+        var tempTabs = [];
+
         chrome.tabs.query({}, function(chromeTabs) 
         {
             chromeTabs.forEach(function(tab) 
             {
-                if (currentTabIsNotTabManager(tab))
+                if (this.currentTabIsNotTabManager(tab))
                 {
-                    this.tabs.push(tab);
+                    tempTabs.push(tab);
                 }
-            }).bind(this);
+            }.bind(this));
 
-            //renderTabs();
-        }).bind(this);
+            this.setState({ tabs: tempTabs});
+
+        }.bind(this));
+    },
+
+    currentTabIsNotTabManager: function(tab)
+    {
+        return (tab.title === 'Chrome Tab Manager') === false;
     },
 
     componentDidMount: function()
@@ -40,7 +56,13 @@ var TabList = React.createClass({
     },
 
     render: function() {
-        return <div>Hellooo</div>;
+        return (
+            <ul>
+                {this.state.tabs.map(function(tab){
+                    return <Tab id={tab.id} key={tab.id} title={tab.title}/>
+                })}
+            </ul>
+        );
     }
 });
 

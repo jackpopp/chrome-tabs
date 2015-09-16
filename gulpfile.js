@@ -6,7 +6,7 @@ var source = require('vinyl-source-stream');
 
 var paths = {
   app_js: ['./src/app.jsx'],
-  js: ['src/*.js'],
+  js: ['src/*.*'],
 };
 
 gulp.task('js', [], function() {

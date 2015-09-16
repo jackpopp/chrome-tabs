@@ -19810,38 +19810,52 @@ module.exports = warning;
 module.exports = require('./lib/React');
 
 },{"./lib/React":29}],157:[function(require,module,exports){
-'use strict';
+// get windows
+// seperate by window
+// add events
+// close tab
+// switch to tab - http://stackoverflow.com/questions/16276276/chrome-extension-select-next-tab
+// create group
+// save group
+
+"use strict";
 
 var React = require('react');
 
-var Tab = React.createClass({ displayName: "Tab",
-    getInitialState: function getInitialState() {
-        return { id: '', url: '', link: '' };
-    },
-
+var Window = React.createClass({ displayName: "Window",
     render: function render() {
-        return React.createElement("div", null, "Hello");
+        return React.createElement("li", null);
+    }
+});
+
+var Tab = React.createClass({ displayName: "Tab",
+    render: function render() {
+        return React.createElement("li", { id: this.props.id }, this.props.title);
     }
 });
 
 var TabList = React.createClass({ displayName: "TabList",
+
     getInitialState: function getInitialState() {
-        return {
-            windows: [],
-            tabs: []
-        };
+        return { windows: [], tabs: [] };
     },
 
     getAllTabs: function getAllTabs() {
-        chrome.tabs.query({}, function (chromeTabs) {
-            chromeTabs.forEach(function (tab) {
-                if (currentTabIsNotTabManager(tab)) {
-                    this.tabs.push(tab);
-                }
-            }).bind(this);
+        var tempTabs = [];
 
-            //renderTabs();
-        }).bind(this);
+        chrome.tabs.query({}, (function (chromeTabs) {
+            chromeTabs.forEach((function (tab) {
+                if (this.currentTabIsNotTabManager(tab)) {
+                    tempTabs.push(tab);
+                }
+            }).bind(this));
+
+            this.setState({ tabs: tempTabs });
+        }).bind(this));
+    },
+
+    currentTabIsNotTabManager: function currentTabIsNotTabManager(tab) {
+        return tab.title === 'Chrome Tab Manager' === false;
     },
 
     componentDidMount: function componentDidMount() {
@@ -19849,7 +19863,9 @@ var TabList = React.createClass({ displayName: "TabList",
     },
 
     render: function render() {
-        return React.createElement("div", null, "Hellooo");
+        return React.createElement("ul", null, this.state.tabs.map(function (tab) {
+            return React.createElement(Tab, { id: tab.id, key: tab.id, title: tab.title });
+        }));
     }
 });
 

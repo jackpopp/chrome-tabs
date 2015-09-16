@@ -1,10 +1,3 @@
-// get windows
-// seperate by window
-// close tab
-// switch to tab - http://stackoverflow.com/questions/16276276/chrome-extension-select-next-tab
-// create group
-// save group
-
 var windows = [];
 var tabObjects = [];
 

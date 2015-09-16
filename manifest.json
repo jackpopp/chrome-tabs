@@ -1,0 +1,15 @@
+{
+  "name": "Chrome Tab List",
+  "description": "List and manage groups of chrome tabs.",
+  "version": "0.1",
+  "manifest_version": 2,
+  "browser_action": {
+    "default_icon": "icon_16.png",
+    "default_popup": "popup.html"
+  },
+  "permissions": [
+    "tabs",
+    "unlimitedStorage"
+  ],
+  "icons": { "16": "icon_16.png", "128": "icon_128.png" }
+}

@@ -8,11 +8,16 @@
     "browserify": "^11.1.0",
     "react": "~0.13.3",
     "gulp": "^3.9.0",
-    "reactify": "^1.1.1",
     "vinyl-source-stream": "^1.1.0"
   },
   "devDependencies": {
-    "babelify": "^6.3.0"
+    "babelify": "^6.3.0",
+    "jasmine": "^2.3.2",
+    "mocha": "^2.3.2",
+    "mocha-traceur": "^2.1.0",
+    "phantomjs": "^1.9.18",
+    "sinon": "^1.16.1",
+    "sinon-chrome": "^0.2.1"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

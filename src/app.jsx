@@ -7,6 +7,7 @@
 // save group
 
 var React = require('react');
+var TabService = require('./tabService.js');
 
 var Window = React.createClass({
     render: function() {
@@ -52,6 +53,8 @@ var TabList = React.createClass({
 
     componentDidMount: function()
     {
+        let ts = new TabService(chrome);
+        ts.fetch( (tabs) => { console.log(tabs) } );
         this.getAllTabs();
     },
 

@@ -19818,23 +19818,33 @@ module.exports = require('./lib/React');
 // create group
 // save group
 
-"use strict";
+'use strict';
 
 var React = require('react');
+var TabService = require('./tabService.js');
 
-var Window = React.createClass({ displayName: "Window",
+var Window = React.createClass({
+    displayName: 'Window',
+
     render: function render() {
-        return React.createElement("li", null);
+        return React.createElement('li', null);
     }
 });
 
-var Tab = React.createClass({ displayName: "Tab",
+var Tab = React.createClass({
+    displayName: 'Tab',
+
     render: function render() {
-        return React.createElement("li", { id: this.props.id }, this.props.title);
+        return React.createElement(
+            'li',
+            { id: this.props.id },
+            this.props.title
+        );
     }
 });
 
-var TabList = React.createClass({ displayName: "TabList",
+var TabList = React.createClass({
+    displayName: 'TabList',
 
     getInitialState: function getInitialState() {
         return { windows: [], tabs: [] };
@@ -19861,16 +19871,67 @@ var TabList = React.createClass({ displayName: "TabList",
     },
 
     componentDidMount: function componentDidMount() {
+        var ts = new TabService(chrome);
+        ts.fetch(function (tabs) {
+            console.log(tabs);
+        });
         this.getAllTabs();
     },
 
     render: function render() {
-        return React.createElement("ul", null, this.state.tabs.map(function (tab) {
-            return React.createElement(Tab, { id: tab.id, key: tab.id, title: tab.title });
-        }));
+        return React.createElement(
+            'ul',
+            null,
+            this.state.tabs.map(function (tab) {
+                return React.createElement(Tab, { id: tab.id, key: tab.id, title: tab.title });
+            })
+        );
     }
 });
 
 React.render(React.createElement(TabList, null), document.querySelector('#main'));
 
-},{"react":156}]},{},[157]);
+},{"./tabService.js":158,"react":156}],158:[function(require,module,exports){
+'use strict';
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+module.exports = (function () {
+	function TabService(chrome) {
+		_classCallCheck(this, TabService);
+
+		this.chrome = chrome;
+	}
+
+	_createClass(TabService, [{
+		key: 'fetch',
+		value: function fetch(callback) {
+			var tabs = [];
+			var promise = new Promise(function (resolver, reject) {
+
+				chrome.tabs.query({}, (function (chromeTabs) {
+					chromeTabs.forEach((function (tab) {
+						if (this.currentTabIsNotTabManager(tab)) {
+							tabs.push(tab);
+						}
+					}).bind(this));
+
+					resolver();
+				}).bind(this));
+			});
+
+			promise.then(callback(tabs));
+		}
+	}, {
+		key: 'currentTabIsNotTabManager',
+		value: function currentTabIsNotTabManager(tab) {
+			return tab.title === 'Chrome Tab Manager' === false;
+		}
+	}]);
+
+	return TabService;
+})();
+
+},{}]},{},[157]);

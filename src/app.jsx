@@ -54,7 +54,7 @@ var TabList = React.createClass({
     componentDidMount: function()
     {
         let ts = new TabService(chrome);
-        ts.fetchTabs( (tabs) => { console.log(tabs) } );
+        ts.fetch( (tabs) => { console.log(tabs) } );
         this.getAllTabs();
     },
 

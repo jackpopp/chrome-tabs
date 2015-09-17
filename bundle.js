@@ -19870,7 +19870,7 @@ var TabList = React.createClass({
 
     componentDidMount: function componentDidMount() {
         var ts = new TabService(chrome);
-        ts.fetchTabs(function (tabs) {
+        ts.fetch(function (tabs) {
             console.log(tabs);
         });
         this.getAllTabs();
@@ -19897,15 +19897,15 @@ var _createClass = (function () { function defineProperties(target, props) { for
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 module.exports = (function () {
-	function TabService(chrome, callback) {
+	function TabService(chrome) {
 		_classCallCheck(this, TabService);
 
 		this.chrome = chrome;
 	}
 
 	_createClass(TabService, [{
-		key: "fetchTabs",
-		value: function fetchTabs(callback) {
+		key: "fetch",
+		value: function fetch(callback) {
 			var tabs = [];
 			var promise = new Promise(function (resolver, reject) {
 				resolver();

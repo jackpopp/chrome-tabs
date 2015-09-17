@@ -19841,17 +19841,19 @@ var TabList = React.createClass({ displayName: "TabList",
     },
 
     getAllTabs: function getAllTabs() {
+        var _this = this;
+
         var tempTabs = [];
 
-        chrome.tabs.query({}, (function (chromeTabs) {
-            chromeTabs.forEach((function (tab) {
-                if (this.currentTabIsNotTabManager(tab)) {
+        chrome.tabs.query({}, function (chromeTabs) {
+            chromeTabs.forEach(function (tab) {
+                if (_this.currentTabIsNotTabManager(tab)) {
                     tempTabs.push(tab);
                 }
-            }).bind(this));
+            });
 
-            this.setState({ tabs: tempTabs });
-        }).bind(this));
+            _this.setState({ tabs: tempTabs });
+        });
     },
 
     currentTabIsNotTabManager: function currentTabIsNotTabManager(tab) {

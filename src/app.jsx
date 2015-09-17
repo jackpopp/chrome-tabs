@@ -28,21 +28,21 @@ var TabList = React.createClass({
 
     getAllTabs: function()
     {
-        var tempTabs = [];
+        let tempTabs = [];
 
-        chrome.tabs.query({}, function(chromeTabs) 
+        chrome.tabs.query({}, (chromeTabs) =>
         {
-            chromeTabs.forEach(function(tab) 
+            chromeTabs.forEach( (tab) =>
             {
                 if (this.currentTabIsNotTabManager(tab))
                 {
                     tempTabs.push(tab);
                 }
-            }.bind(this));
+            });
 
             this.setState({ tabs: tempTabs});
 
-        }.bind(this));
+        });
     },
 
     currentTabIsNotTabManager: function(tab)

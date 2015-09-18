@@ -19822,6 +19822,7 @@ module.exports = require('./lib/React');
 
 var React = require('react');
 var TabService = require('./tabService.js');
+var WindowService = require('./windowService.js');
 
 var Window = React.createClass({
     displayName: 'Window',
@@ -19850,32 +19851,18 @@ var TabList = React.createClass({
         return { windows: [], tabs: [] };
     },
 
-    getAllTabs: function getAllTabs() {
+    componentDidMount: function componentDidMount() {
         var _this = this;
 
-        var tempTabs = [];
-
-        chrome.tabs.query({}, function (chromeTabs) {
-            chromeTabs.forEach(function (tab) {
-                if (_this.currentTabIsNotTabManager(tab)) {
-                    tempTabs.push(tab);
-                }
-            });
-
-            _this.setState({ tabs: tempTabs });
-        });
-    },
-
-    currentTabIsNotTabManager: function currentTabIsNotTabManager(tab) {
-        return tab.title === 'Chrome Tab Manager' === false;
-    },
-
-    componentDidMount: function componentDidMount() {
         var ts = new TabService(chrome);
         ts.fetch(function (tabs) {
-            console.log(tabs);
+            _this.setState({ tabs: tabs });
         });
-        this.getAllTabs();
+
+        var ws = new WindowService(chrome);
+        ws.fetch(function (windows) {
+            console.log(windows);
+        });
     },
 
     render: function render() {
@@ -19889,9 +19876,15 @@ var TabList = React.createClass({
     }
 });
 
+var WindowList = React.createClass({
+    displayName: 'WindowList',
+
+    render: function render() {}
+});
+
 React.render(React.createElement(TabList, null), document.querySelector('#main'));
 
-},{"./tabService.js":158,"react":156}],158:[function(require,module,exports){
+},{"./tabService.js":158,"./windowService.js":159,"react":156}],158:[function(require,module,exports){
 'use strict';
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -19908,21 +19901,24 @@ module.exports = (function () {
 	_createClass(TabService, [{
 		key: 'fetch',
 		value: function fetch(callback) {
+			var _this = this;
+
 			var tabs = [];
 			var promise = new Promise(function (resolver, reject) {
-
-				chrome.tabs.query({}, (function (chromeTabs) {
-					chromeTabs.forEach((function (tab) {
-						if (this.currentTabIsNotTabManager(tab)) {
+				_this.chrome.tabs.query({}, function (chromeTabs) {
+					chromeTabs.forEach(function (tab) {
+						if (_this.currentTabIsNotTabManager(tab)) {
 							tabs.push(tab);
 						}
-					}).bind(this));
+					});
 
 					resolver();
-				}).bind(this));
+				});
 			});
 
-			promise.then(callback(tabs));
+			promise.then(function () {
+				callback(tabs);
+			});
 		}
 	}, {
 		key: 'currentTabIsNotTabManager',
@@ -19932,6 +19928,45 @@ module.exports = (function () {
 	}]);
 
 	return TabService;
+})();
+
+},{}],159:[function(require,module,exports){
+"use strict";
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+module.exports = (function () {
+	function WindowService(chrome) {
+		_classCallCheck(this, WindowService);
+
+		this.chrome = chrome;
+	}
+
+	_createClass(WindowService, [{
+		key: "fetch",
+		value: function fetch(callback) {
+			var _this = this;
+
+			var windows = [];
+			var promise = new Promise(function (resolver, reject) {
+				_this.chrome.windows.getAll({}, function (chromeWindows) {
+					chromeWindows.forEach(function (chromeWinow) {
+						windows.push(chromeWinow);
+					});
+
+					resolver();
+				});
+			});
+
+			promise.then(function () {
+				callback(windows);
+			});
+		}
+	}]);
+
+	return WindowService;
 })();
 
 },{}]},{},[157]);

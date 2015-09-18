@@ -8,6 +8,7 @@
 
 var React = require('react');
 var TabService = require('./tabService.js');
+var WindowService = require('./windowService.js')
 
 var Window = React.createClass({
     render: function() {
@@ -27,35 +28,13 @@ var TabList = React.createClass({
         return {windows: [], tabs: []};
     },
 
-    getAllTabs: function()
-    {
-        let tempTabs = [];
-
-        chrome.tabs.query({}, (chromeTabs) =>
-        {
-            chromeTabs.forEach( (tab) =>
-            {
-                if (this.currentTabIsNotTabManager(tab))
-                {
-                    tempTabs.push(tab);
-                }
-            });
-
-            this.setState({ tabs: tempTabs});
-
-        });
-    },
-
-    currentTabIsNotTabManager: function(tab)
-    {
-        return (tab.title === 'Chrome Tab Manager') === false;
-    },
-
     componentDidMount: function()
     {
         let ts = new TabService(chrome);
-        ts.fetch( (tabs) => { console.log(tabs) } );
-        this.getAllTabs();
+        ts.fetch((tabs) => { this.setState({ tabs: tabs}) });
+
+        let ws = new WindowService(chrome);
+        ws.fetch((windows) => { console.log(windows) });
     },
 
     render: function() {

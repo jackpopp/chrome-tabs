@@ -21,7 +21,7 @@ module.exports = class TabService {
 	        });
 		});
 
-		promise.then(callback(tabs));
+		promise.then(() => { callback(tabs) });
 	}
 
 	currentTabIsNotTabManager(tab) {

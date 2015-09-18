@@ -18,6 +18,6 @@ module.exports = class WindowService {
 	        });
 		});
 
-		promise.then(callback(windows));
+		promise.then(() => {callback(windows)});
 	}
 }

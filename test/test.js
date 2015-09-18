@@ -1,13 +1,20 @@
 // mocha --compilers js:mocha-traceur
-let sinon = require('sinon');
+//let sinon = require('sinon');
 let assert = require("assert");
-let chrome = require('../node_modules/sinon-chrome/src/chrome.js');
-let TabService = require('../src/tabService.js');
-let ts = new TabService(chrome);
-let tabs = [
+//let chrome = require('../node_modules/sinon-chrome/src/chrome.js');
+let mockTabs = [
 	{id: 1, url: 'test', title: 'title'},
 	{id: 2, url: 'test-two', title: 'title-two'}
 ];
+let chrome = {
+	tabs: {
+		query: function(args, cb){
+			cb(mockTabs);
+		}
+	}
+}
+let TabService = require('../src/tabService.js');
+let ts = new TabService(chrome);
 
 describe('Tab Service', function() {
 	describe('Construct', function() {
@@ -18,10 +25,8 @@ describe('Tab Service', function() {
 
 	describe('Fetch Tabs', function() {
 		it('Returns two tabs when fetch is called', function(done) {
-			chrome.tabs.query.yields(tabs);
 			ts.fetch((response) => { 
-				//assert.equal(tabs, response); 
-				sinon.assert.calledOnce(chrome.tabs.query);
+				assert.deepEqual(mockTabs, response); 
 				done();
 			});
 		});

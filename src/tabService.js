@@ -5,9 +5,9 @@ module.exports = class TabService {
 
 	fetch(callback) {
 		let tabs = [];
-		let promise = new Promise(function(resolver, reject){
+		let promise = new Promise(function(resolver, reject) {
 
-			chrome.tabs.query({}, function(chromeTabs) 
+			this.chrome.tabs.query({}, function(chromeTabs) 
 	        {
 	            chromeTabs.forEach(function(tab) 
 	            {
@@ -20,7 +20,7 @@ module.exports = class TabService {
 	            resolver();
 
 	        }.bind(this));
-		});
+		}.bind(this));
 
 		promise.then(callback(tabs));
 	}

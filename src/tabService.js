@@ -5,22 +5,21 @@ module.exports = class TabService {
 
 	fetch(callback) {
 		let tabs = [];
-		let promise = new Promise(function(resolver, reject) {
-
-			this.chrome.tabs.query({}, function(chromeTabs) 
-	        {
-	            chromeTabs.forEach(function(tab) 
+		let promise = new Promise( (resolver, reject) => 
+		{
+			this.chrome.tabs.query({}, (chromeTabs) => 
+			{
+	            chromeTabs.forEach( (tab) => 
 	            {
 	                if (this.currentTabIsNotTabManager(tab))
 	                {
 	                    tabs.push(tab);
 	                }
-	            }.bind(this));
+	            });
 
 	            resolver();
-
-	        }.bind(this));
-		}.bind(this));
+	        });
+		});
 
 		promise.then(callback(tabs));
 	}

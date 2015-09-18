@@ -69,4 +69,10 @@ var TabList = React.createClass({
     }
 });
 
+var WindowList = React.createClass({
+    render: function() {
+        
+    }
+});
+
 React.render(<TabList />, document.querySelector('#main'))

@@ -19823,6 +19823,7 @@ module.exports = require('./lib/React');
 var React = require('react');
 var TabService = require('./tabService.js');
 var WindowService = require('./windowService.js');
+var WindowDataBuilder = require('./windowDataBuilder.js');
 
 var Window = React.createClass({
     displayName: 'Window',
@@ -19884,7 +19885,14 @@ var Window = React.createClass({
             'li',
             { id: this.props.id },
             'Window: ',
-            this.props.id
+            this.props.id,
+            React.createElement(
+                'ul',
+                null,
+                this.props.tabs.map(function (tab) {
+                    return React.createElement(Tab, { id: tab.id, key: tab.id, title: tab.title });
+                })
+            )
         );
     }
 });
@@ -19900,22 +19908,29 @@ var WindowList = React.createClass({
         var _this2 = this;
 
         var ws = new WindowService(chrome);
+        var ts = new TabService(chrome);
+        var windowDataBuilder = new WindowDataBuilder();
+
         ws.fetch(function (windows) {
-            _this2.setState({ windows: windows });
+
+            ts.fetch(function (tabs) {
+
+                windows = windowDataBuilder.build(windows, tabs);
+                _this2.setState({ windows: windows });
+            });
         });
 
-        var ts = new TabService(chrome);
-        ts.fetch(function (tabs) {
-            console.log(tabs);
-        });
+        window.onfocus = function () {
+            console.log('re render window and tab list');
+        };
     },
 
     render: function render() {
         return React.createElement(
             'ul',
             null,
-            this.state.windows.map(function (tab) {
-                return React.createElement(Window, { id: tab.id, key: tab.id });
+            this.state.windows.map(function (window) {
+                return React.createElement(Window, { id: window.id, key: window.id, tabs: window.tabs });
             })
         );
     }
@@ -19924,7 +19939,7 @@ var WindowList = React.createClass({
 //React.render(<TabList />, document.querySelector('#main'))
 React.render(React.createElement(WindowList, null), document.querySelector('#main'));
 
-},{"./tabService.js":158,"./windowService.js":159,"react":156}],158:[function(require,module,exports){
+},{"./tabService.js":158,"./windowDataBuilder.js":159,"./windowService.js":160,"react":156}],158:[function(require,module,exports){
 'use strict';
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -19971,6 +19986,40 @@ module.exports = (function () {
 })();
 
 },{}],159:[function(require,module,exports){
+"use strict";
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+module.exports = (function () {
+	function WindowDataBuilder() {
+		_classCallCheck(this, WindowDataBuilder);
+	}
+
+	_createClass(WindowDataBuilder, [{
+		key: "build",
+		value: function build(windowData, tabData) {
+			var returnData = [];
+
+			windowData.forEach(function (win) {
+				win.tabs = [];
+
+				tabData.forEach(function (tab) {
+					if (tab.windowId == win.id) {
+						win.tabs.push(tab);
+					}
+				});
+			});
+
+			return windowData;
+		}
+	}]);
+
+	return WindowDataBuilder;
+})();
+
+},{}],160:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();

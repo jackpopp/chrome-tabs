@@ -8,7 +8,8 @@
 
 var React = require('react');
 var TabService = require('./tabService.js');
-var WindowService = require('./windowService.js')
+var WindowService = require('./windowService.js');
+var WindowDataBuilder = require('./windowDataBuilder.js');
 
 var Window = React.createClass({
     render: function() {
@@ -50,7 +51,14 @@ var TabList = React.createClass({
 
 var Window = React.createClass({
     render: function() {
-        return <li id={this.props.id}>Window: {this.props.id}</li>;
+        return <li id={this.props.id}>
+            Window: {this.props.id}
+            <ul>
+                {this.props.tabs.map(function(tab){
+                    return <Tab id={tab.id} key={tab.id} title={tab.title}/>
+                })}
+            </ul>
+        </li>;
     }
 });
 
@@ -63,17 +71,30 @@ var WindowList = React.createClass({
     componentDidMount: function()
     {
         let ws = new WindowService(chrome);
-        ws.fetch((windows) => { this.setState({ windows: windows}) });
-
         let ts = new TabService(chrome);
-        ts.fetch((tabs) => { console.log(tabs) });
+        let windowDataBuilder = new WindowDataBuilder();
+
+        ws.fetch((windows) => { 
+
+            ts.fetch((tabs) => { 
+
+                windows = windowDataBuilder.build(windows, tabs)
+                this.setState({ windows: windows}) 
+            });
+
+            
+        });
+
+        window.onfocus = function(){
+            console.log('re render window and tab list');
+        }
     },
 
     render: function() {
         return (
             <ul>
-                {this.state.windows.map(function(tab){
-                    return <Window id={tab.id} key={tab.id} />
+                {this.state.windows.map(function(window){
+                    return <Window id={window.id} key={window.id} tabs={window.tabs} />
                 })}
             </ul>
         );

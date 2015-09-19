@@ -25,7 +25,7 @@ var Tab = React.createClass({
 var TabList = React.createClass({
 
     getInitialState: function() {
-        return {windows: [], tabs: []};
+        return {tabs: []};
     },
 
     componentDidMount: function()
@@ -48,10 +48,37 @@ var TabList = React.createClass({
     }
 });
 
-var WindowList = React.createClass({
+var Window = React.createClass({
     render: function() {
-        
+        return <li id={this.props.id}>Window: {this.props.id}</li>;
     }
 });
 
-React.render(<TabList />, document.querySelector('#main'))
+var WindowList = React.createClass({
+
+    getInitialState: function() {
+        return {windows: []};
+    },
+
+    componentDidMount: function()
+    {
+        let ws = new WindowService(chrome);
+        ws.fetch((windows) => { this.setState({ windows: windows}) });
+
+        let ts = new TabService(chrome);
+        ts.fetch((tabs) => { console.log(tabs) });
+    },
+
+    render: function() {
+        return (
+            <ul>
+                {this.state.windows.map(function(tab){
+                    return <Window id={tab.id} key={tab.id} />
+                })}
+            </ul>
+        );
+    }
+});
+
+//React.render(<TabList />, document.querySelector('#main'))
+React.render(<WindowList />, document.querySelector('#main'))

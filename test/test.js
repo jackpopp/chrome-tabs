@@ -7,12 +7,16 @@ let request = require('request');
 let mockTabs = require('./mocks/mockTabData.js');
 let mockWindows = require('./mocks/mockWindowData.js');
 let mockChrome = require('./mocks/mockChrome.js');
+let mockBuiltData = require('./mocks/mockBuiltData.js');
 
 let TabService = require('../src/tabService.js');
 let ts = new TabService(mockChrome);
 
 let WindowService = require('../src/windowService.js');
 let ws = new WindowService(mockChrome);
+
+let WindowDataBuilder = require('../src/windowDataBuilder.js');
+let windowDataBuilder = new WindowDataBuilder();
 
 describe('Tab Service', function() {
     describe('Construct', function() {
@@ -44,6 +48,12 @@ describe('Window Service', function() {
             });
         });
     });
+});
+
+describe('Window Data Build', function() {
+	it('combines the window and tab data into correctly order data', function(){
+		assert.deepEqual(mockBuiltData, windowDataBuilder.build(mockWindows, mockTabs));
+	});
 });
 
 describe('Chrome Tab Manager', function() {

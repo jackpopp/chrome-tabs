@@ -19848,7 +19848,7 @@ var TabList = React.createClass({
     displayName: 'TabList',
 
     getInitialState: function getInitialState() {
-        return { windows: [], tabs: [] };
+        return { tabs: [] };
     },
 
     componentDidMount: function componentDidMount() {
@@ -19876,13 +19876,53 @@ var TabList = React.createClass({
     }
 });
 
+var Window = React.createClass({
+    displayName: 'Window',
+
+    render: function render() {
+        return React.createElement(
+            'li',
+            { id: this.props.id },
+            'Window: ',
+            this.props.id
+        );
+    }
+});
+
 var WindowList = React.createClass({
     displayName: 'WindowList',
 
-    render: function render() {}
+    getInitialState: function getInitialState() {
+        return { windows: [] };
+    },
+
+    componentDidMount: function componentDidMount() {
+        var _this2 = this;
+
+        var ws = new WindowService(chrome);
+        ws.fetch(function (windows) {
+            _this2.setState({ windows: windows });
+        });
+
+        var ts = new TabService(chrome);
+        ts.fetch(function (tabs) {
+            console.log(tabs);
+        });
+    },
+
+    render: function render() {
+        return React.createElement(
+            'ul',
+            null,
+            this.state.windows.map(function (tab) {
+                return React.createElement(Window, { id: tab.id, key: tab.id });
+            })
+        );
+    }
 });
 
-React.render(React.createElement(TabList, null), document.querySelector('#main'));
+//React.render(<TabList />, document.querySelector('#main'))
+React.render(React.createElement(WindowList, null), document.querySelector('#main'));
 
 },{"./tabService.js":158,"./windowService.js":159,"react":156}],158:[function(require,module,exports){
 'use strict';

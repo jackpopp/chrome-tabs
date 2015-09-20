@@ -19812,9 +19812,8 @@ module.exports = require('./lib/React');
 },{"./lib/React":29}],157:[function(require,module,exports){
 // get windows - done
 // seperate by window - done
-// add basic style
-// collapse window
-// uncollapse all windows
+// add basic style - done
+// collapse window - done
 // close tab
 // switch to tab - http://stackoverflow.com/questions/16276276/chrome-extension-select-next-tab
 // add events
@@ -19884,13 +19883,21 @@ var TabList = React.createClass({
 var Window = React.createClass({
     displayName: 'Window',
 
+    getInitialState: function getInitialState() {
+        return { open: true };
+    },
+
+    handleClick: function handleClick() {
+        this.setState({ open: this.state.open ? false : true });
+    },
+
     render: function render() {
         return React.createElement(
             'div',
             { id: this.props.id, className: 'col-md-6' },
             React.createElement(
                 'div',
-                { className: 'panel panel-default' },
+                { className: 'panel panel-default', onClick: this.handleClick },
                 React.createElement(
                     'div',
                     { className: 'panel-heading' },
@@ -19916,13 +19923,13 @@ var Window = React.createClass({
                         )
                     )
                 ),
-                React.createElement(
+                this.state.open ? React.createElement(
                     'ul',
                     { className: 'list-group' },
                     this.props.tabs.map(function (tab) {
                         return React.createElement(Tab, { id: tab.id, key: tab.id, title: tab.title });
                     })
-                )
+                ) : null
             )
         );
     }
@@ -19952,6 +19959,7 @@ var WindowList = React.createClass({
         });
 
         window.onfocus = function () {
+            // make change this to say refresh
             document.getElementById('main').innerHTML = null;
             React.render(React.createElement(WindowList, null), document.querySelector('#main'));
         };

@@ -1,8 +1,7 @@
 // get windows - done
 // seperate by window - done
-// add basic style
-// collapse window
-// uncollapse all windows
+// add basic style - done
+// collapse window - done
 // close tab
 // switch to tab - http://stackoverflow.com/questions/16276276/chrome-extension-select-next-tab
 // add events
@@ -54,9 +53,18 @@ var TabList = React.createClass({
 });
 
 var Window = React.createClass({
+
+    getInitialState: function() {
+        return {open: true};
+    },
+
+    handleClick: function() {
+        this.setState({ open: this.state.open ? false : true });
+    },
+
     render: function() {
         return <div id={this.props.id} className="col-md-6">
-            <div className="panel panel-default">
+            <div className="panel panel-default" onClick={this.handleClick}>
                 <div className="panel-heading">
                     <div className="clearfix">
                         <span className="pull-left">Window: {this.props.id}</span>
@@ -67,11 +75,11 @@ var Window = React.createClass({
                         </span>
                     </div>
                 </div>
-                <ul className="list-group">
+                { this.state.open ? <ul className="list-group">
                     {this.props.tabs.map(function(tab){
                         return <Tab id={tab.id} key={tab.id} title={tab.title}/>
                     })}
-                </ul>
+                </ul> : null }
             </div>
         </div>;
     }
@@ -100,6 +108,7 @@ var WindowList = React.createClass({
         });
 
         window.onfocus = function() {
+            // make change this to say refresh
             document.getElementById('main').innerHTML = null;
             React.render(<WindowList />, document.querySelector('#main'))
         }

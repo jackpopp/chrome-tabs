@@ -23,7 +23,8 @@
     "serve-static": "^1.10.0",
     "sinon": "^1.16.1",
     "sinon-chrome": "^0.2.1",
-    "zombie": "~4.0.8"
+    "zombie": "~4.0.8",
+    "sweetalert": "~1.1.0"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

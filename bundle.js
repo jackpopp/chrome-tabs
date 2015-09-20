@@ -19810,11 +19810,14 @@ module.exports = warning;
 module.exports = require('./lib/React');
 
 },{"./lib/React":29}],157:[function(require,module,exports){
-// get windows
-// seperate by window
-// add events
+// get windows - done
+// seperate by window - done
+// add basic style
+// collapse window
+// uncollapse all windows
 // close tab
 // switch to tab - http://stackoverflow.com/questions/16276276/chrome-extension-select-next-tab
+// add events
 // create group
 // save group
 
@@ -19824,6 +19827,7 @@ var React = require('react');
 var TabService = require('./tabService.js');
 var WindowService = require('./windowService.js');
 var WindowDataBuilder = require('./windowDataBuilder.js');
+var utils = require('./utils.js');
 
 var Window = React.createClass({
     displayName: 'Window',
@@ -19839,7 +19843,7 @@ var Tab = React.createClass({
     render: function render() {
         return React.createElement(
             'li',
-            { id: this.props.id },
+            { id: this.props.id, className: 'list-group-item' },
             this.props.title
         );
     }
@@ -19882,16 +19886,43 @@ var Window = React.createClass({
 
     render: function render() {
         return React.createElement(
-            'li',
-            { id: this.props.id },
-            'Window: ',
-            this.props.id,
+            'div',
+            { id: this.props.id, className: 'col-md-6' },
             React.createElement(
-                'ul',
-                null,
-                this.props.tabs.map(function (tab) {
-                    return React.createElement(Tab, { id: tab.id, key: tab.id, title: tab.title });
-                })
+                'div',
+                { className: 'panel panel-default' },
+                React.createElement(
+                    'div',
+                    { className: 'panel-heading' },
+                    React.createElement(
+                        'div',
+                        { className: 'clearfix' },
+                        React.createElement(
+                            'span',
+                            { className: 'pull-left' },
+                            'Window: ',
+                            this.props.id
+                        ),
+                        React.createElement(
+                            'span',
+                            { className: 'pull-right' },
+                            React.createElement(
+                                'span',
+                                { className: 'badge' },
+                                this.props.tabs.length,
+                                ' ',
+                                utils.pluralise(this.props.tabs.length, 'tab')
+                            )
+                        )
+                    )
+                ),
+                React.createElement(
+                    'ul',
+                    { className: 'list-group' },
+                    this.props.tabs.map(function (tab) {
+                        return React.createElement(Tab, { id: tab.id, key: tab.id, title: tab.title });
+                    })
+                )
             )
         );
     }
@@ -19927,8 +19958,8 @@ var WindowList = React.createClass({
 
     render: function render() {
         return React.createElement(
-            'ul',
-            null,
+            'div',
+            { className: 'row' },
             this.state.windows.map(function (window) {
                 return React.createElement(Window, { id: window.id, key: window.id, tabs: window.tabs });
             })
@@ -19939,7 +19970,7 @@ var WindowList = React.createClass({
 //React.render(<TabList />, document.querySelector('#main'))
 React.render(React.createElement(WindowList, null), document.querySelector('#main'));
 
-},{"./tabService.js":158,"./windowDataBuilder.js":159,"./windowService.js":160,"react":156}],158:[function(require,module,exports){
+},{"./tabService.js":158,"./utils.js":159,"./windowDataBuilder.js":160,"./windowService.js":161,"react":156}],158:[function(require,module,exports){
 'use strict';
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -19988,6 +20019,15 @@ module.exports = (function () {
 },{}],159:[function(require,module,exports){
 "use strict";
 
+module.exports = {
+	pluralise: function pluralise(number, text) {
+		return parseInt(number) === 1 ? text : text + "s";
+	}
+};
+
+},{}],160:[function(require,module,exports){
+"use strict";
+
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -20019,7 +20059,7 @@ module.exports = (function () {
 	return WindowDataBuilder;
 })();
 
-},{}],160:[function(require,module,exports){
+},{}],161:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();

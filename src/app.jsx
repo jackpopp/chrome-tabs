@@ -1,8 +1,11 @@
-// get windows
-// seperate by window
-// add events
+// get windows - done
+// seperate by window - done
+// add basic style
+// collapse window
+// uncollapse all windows
 // close tab
 // switch to tab - http://stackoverflow.com/questions/16276276/chrome-extension-select-next-tab
+// add events
 // create group
 // save group
 
@@ -10,6 +13,7 @@ var React = require('react');
 var TabService = require('./tabService.js');
 var WindowService = require('./windowService.js');
 var WindowDataBuilder = require('./windowDataBuilder.js');
+var utils = require('./utils.js');
 
 var Window = React.createClass({
     render: function() {
@@ -19,7 +23,7 @@ var Window = React.createClass({
 
 var Tab = React.createClass({
     render: function() {
-        return <li id={this.props.id}>{this.props.title}</li>;
+        return <li id={this.props.id} className="list-group-item">{this.props.title}</li>;
     }
 });
 
@@ -51,14 +55,21 @@ var TabList = React.createClass({
 
 var Window = React.createClass({
     render: function() {
-        return <li id={this.props.id}>
-            Window: {this.props.id}
-            <ul>
-                {this.props.tabs.map(function(tab){
-                    return <Tab id={tab.id} key={tab.id} title={tab.title}/>
-                })}
-            </ul>
-        </li>;
+        return <div id={this.props.id} className="col-md-6">
+            <div className="panel panel-default">
+                <div className="panel-heading">
+                    <div className="clearfix">
+                        <span className="pull-left">Window: {this.props.id}</span>
+                        <span className="pull-right"><span className="badge">{this.props.tabs.length} {utils.pluralise(this.props.tabs.length, 'tab')}</span></span>
+                    </div>
+                </div>
+                <ul className="list-group">
+                    {this.props.tabs.map(function(tab){
+                        return <Tab id={tab.id} key={tab.id} title={tab.title}/>
+                    })}
+                </ul>
+            </div>
+        </div>;
     }
 });
 
@@ -92,11 +103,11 @@ var WindowList = React.createClass({
 
     render: function() {
         return (
-            <ul>
+            <div className="row">
                 {this.state.windows.map(function(window){
                     return <Window id={window.id} key={window.id} tabs={window.tabs} />
                 })}
-            </ul>
+            </div>
         );
     }
 });

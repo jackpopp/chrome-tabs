@@ -1,3 +1,1 @@
-chrome.tabs.create({ url:'index.html' }, function(){
-
-});
+chrome.tabs.create({ url:'index.html' });

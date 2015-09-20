@@ -19952,7 +19952,8 @@ var WindowList = React.createClass({
         });
 
         window.onfocus = function () {
-            console.log('re render window and tab list');
+            document.getElementById('main').innerHTML = null;
+            React.render(React.createElement(WindowList, null), document.querySelector('#main'));
         };
     },
 

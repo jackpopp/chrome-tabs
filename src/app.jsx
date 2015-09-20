@@ -60,7 +60,11 @@ var Window = React.createClass({
                 <div className="panel-heading">
                     <div className="clearfix">
                         <span className="pull-left">Window: {this.props.id}</span>
-                        <span className="pull-right"><span className="badge">{this.props.tabs.length} {utils.pluralise(this.props.tabs.length, 'tab')}</span></span>
+                        <span className="pull-right">
+                            <span className="badge">
+                                {this.props.tabs.length} {utils.pluralise(this.props.tabs.length, 'tab')}
+                            </span>
+                        </span>
                     </div>
                 </div>
                 <ul className="list-group">
@@ -79,8 +83,7 @@ var WindowList = React.createClass({
         return {windows: []};
     },
 
-    componentDidMount: function()
-    {
+    componentDidMount: function() {
         let ws = new WindowService(chrome);
         let ts = new TabService(chrome);
         let windowDataBuilder = new WindowDataBuilder();
@@ -96,15 +99,16 @@ var WindowList = React.createClass({
             
         });
 
-        window.onfocus = function(){
-            console.log('re render window and tab list');
+        window.onfocus = function() {
+            document.getElementById('main').innerHTML = null;
+            React.render(<WindowList />, document.querySelector('#main'))
         }
     },
 
     render: function() {
         return (
             <div className="row">
-                {this.state.windows.map(function(window){
+                {this.state.windows.map(function(window) {
                     return <Window id={window.id} key={window.id} tabs={window.tabs} />
                 })}
             </div>

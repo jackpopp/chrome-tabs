@@ -1,4 +1,5 @@
 //let sinon = require('sinon');
+var Browser = require('zombie');
 
 let assert = require("assert");
 let server = require('./server.js');

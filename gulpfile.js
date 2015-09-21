@@ -3,6 +3,7 @@ var browserify = require('browserify');
 var babelify = require('babelify'); 
 var source = require('vinyl-source-stream');
 var del = require('del');
+var zip = require('gulp-zip');
 
 var paths = {
   app_js: ['./src/app.jsx'],
@@ -20,9 +21,9 @@ gulp.task('js', [], function() {
 
 gulp.task('publish', function() {
 
-	del(['./build/*']).then(function () {
+	del(['./dist/*']).then(function () {
 	    
-		gulp.src([
+		return gulp.src([
 			'./mainifest.json',
 			'./bundle.js',
 			'./bootstrap.min.css',
@@ -32,7 +33,10 @@ gulp.task('publish', function() {
 			'init.js',
 			'popup.html',
 			'sweetalert.css'
-		]).pipe(gulp.dest('./build'));
+		])
+		//.pipe(gulp.dest('./dist'))
+        .pipe(zip('build.zip'))
+        .pipe(gulp.dest('./dist'));
 
 	});
 });

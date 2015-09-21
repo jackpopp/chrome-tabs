@@ -16,6 +16,7 @@
     "filehandler": "0.0.0",
     "finalhandler": "^0.4.0",
     "fs": "0.0.2",
+    "gulp-zip": "^3.0.2",
     "http": "0.0.0",
     "jasmine": "^2.3.2",
     "mocha": "^2.3.2",

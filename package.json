@@ -12,6 +12,7 @@
   },
   "devDependencies": {
     "babelify": "^6.3.0",
+    "del": "^2.0.2",
     "filehandler": "0.0.0",
     "finalhandler": "^0.4.0",
     "fs": "0.0.2",
@@ -23,8 +24,8 @@
     "serve-static": "^1.10.0",
     "sinon": "^1.16.1",
     "sinon-chrome": "^0.2.1",
-    "zombie": "~4.0.8",
-    "sweetalert": "~1.1.0"
+    "sweetalert": "~1.1.0",
+    "zombie": "~4.0.8"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

@@ -2,6 +2,7 @@ var gulp = require('gulp');
 var browserify = require('browserify');
 var babelify = require('babelify'); 
 var source = require('vinyl-source-stream');
+var del = require('del');
 
 var paths = {
   app_js: ['./src/app.jsx'],
@@ -15,6 +16,25 @@ gulp.task('js', [], function() {
     .bundle()
     .pipe(source('bundle.js'))
     .pipe(gulp.dest('./'));
+});
+
+gulp.task('publish', function() {
+
+	del(['./build/*']).then(function () {
+	    
+		gulp.src([
+			'./mainifest.json',
+			'./bundle.js',
+			'./bootstrap.min.css',
+			'icon_128.png',
+			'icon_16.png',
+			'index.html',
+			'init.js',
+			'popup.html',
+			'sweetalert.css'
+		]).pipe(gulp.dest('./build'));
+
+	});
 });
 
 gulp.task('watch', function() {

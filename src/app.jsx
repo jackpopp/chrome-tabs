@@ -34,6 +34,8 @@ var Tab = React.createClass({
 
     switch: function() {
         chrome.tabs.update(this.props.id, {active: true});
+        this.props.focusWindow();
+        // set active on parent
     },
 
     render: function() {
@@ -54,7 +56,7 @@ var Window = React.createClass({
     toggleOpen: function() {
         // set this is local storage so we remember everytime we render
 
-        //this.setState({ open: this.state.open ? false : true });
+        this.setState({ open: this.state.open ? false : true });
     },
 
     closeFunction: function(tabId) {
@@ -67,6 +69,10 @@ var Window = React.createClass({
             tabs: tabs
         });
     },
+
+    focusWindow: function() {
+        console.log(this.props.id);
+    },
   
     render: function() {
         return <div id={this.props.id} className="col-md-6">
@@ -77,7 +83,7 @@ var Window = React.createClass({
                 </div>
                 { this.state.open ? <ul className="list-group">
                     {this.state.tabs.map((tab) => {
-                        return <Tab id={tab.id} key={tab.id} title={tab.title} onClick={this.closeFunction}/>
+                        return <Tab id={tab.id} key={tab.id} title={tab.title} onClick={this.closeFunction} focusWindow={this.focusWindow}/>
                     })}
                 </ul> : null }
             </div>
@@ -86,6 +92,8 @@ var Window = React.createClass({
 });
 
 var WindowList = React.createClass({
+
+    focused: true,
 
     getInitialState: function() {
         return {windows: []};
@@ -96,11 +104,17 @@ var WindowList = React.createClass({
 
         // do these if the window isnt focused
 
-        chrome.tabs.onCreated.addListener((tab) => {this.getData(tab)});
-        chrome.tabs.onRemoved.addListener((tab) => {this.getData(tab)});
-        chrome.tabs.onAttached.addListener((tab) => {this.getData(tab)});
-        chrome.tabs.onDetached.addListener((tab) => {this.getData(tab)});
-        chrome.tabs.onUpdated.addListener((tab) => {this.getData(tab)});
+        if (this.focused) 
+        {
+            chrome.tabs.onCreated.addListener((tab) => {this.getData(tab)});
+            chrome.tabs.onRemoved.addListener((tab) => {this.getData(tab)});
+            chrome.tabs.onAttached.addListener((tab) => {this.getData(tab)});
+            chrome.tabs.onDetached.addListener((tab) => {this.getData(tab)});
+            chrome.tabs.onUpdated.addListener((tab) => {this.getData(tab)});
+        }
+
+        window.onfocus = () => this.focused = true;
+        window.onblur = () => this.focused = false;
     },
 
     getData: function(tab) {

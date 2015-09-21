@@ -19850,6 +19850,8 @@ var Tab = React.createClass({
 
     'switch': function _switch() {
         chrome.tabs.update(this.props.id, { active: true });
+        this.props.focusWindow();
+        // set active on parent
     },
 
     render: function render() {
@@ -19885,7 +19887,7 @@ var Window = React.createClass({
     toggleOpen: function toggleOpen() {
         // set this is local storage so we remember everytime we render
 
-        //this.setState({ open: this.state.open ? false : true });
+        this.setState({ open: this.state.open ? false : true });
     },
 
     closeFunction: function closeFunction(tabId) {
@@ -19897,6 +19899,10 @@ var Window = React.createClass({
         this.setState({
             tabs: tabs
         });
+    },
+
+    focusWindow: function focusWindow() {
+        console.log(this.props.id);
     },
 
     render: function render() {
@@ -19925,7 +19931,7 @@ var Window = React.createClass({
                     'ul',
                     { className: 'list-group' },
                     this.state.tabs.map(function (tab) {
-                        return React.createElement(Tab, { id: tab.id, key: tab.id, title: tab.title, onClick: _this.closeFunction });
+                        return React.createElement(Tab, { id: tab.id, key: tab.id, title: tab.title, onClick: _this.closeFunction, focusWindow: _this.focusWindow });
                     })
                 ) : null
             )
@@ -19935,6 +19941,8 @@ var Window = React.createClass({
 
 var WindowList = React.createClass({
     displayName: 'WindowList',
+
+    focused: true,
 
     getInitialState: function getInitialState() {
         return { windows: [] };
@@ -19947,21 +19955,30 @@ var WindowList = React.createClass({
 
         // do these if the window isnt focused
 
-        chrome.tabs.onCreated.addListener(function (tab) {
-            _this2.getData(tab);
-        });
-        chrome.tabs.onRemoved.addListener(function (tab) {
-            _this2.getData(tab);
-        });
-        chrome.tabs.onAttached.addListener(function (tab) {
-            _this2.getData(tab);
-        });
-        chrome.tabs.onDetached.addListener(function (tab) {
-            _this2.getData(tab);
-        });
-        chrome.tabs.onUpdated.addListener(function (tab) {
-            _this2.getData(tab);
-        });
+        if (this.focused) {
+            chrome.tabs.onCreated.addListener(function (tab) {
+                _this2.getData(tab);
+            });
+            chrome.tabs.onRemoved.addListener(function (tab) {
+                _this2.getData(tab);
+            });
+            chrome.tabs.onAttached.addListener(function (tab) {
+                _this2.getData(tab);
+            });
+            chrome.tabs.onDetached.addListener(function (tab) {
+                _this2.getData(tab);
+            });
+            chrome.tabs.onUpdated.addListener(function (tab) {
+                _this2.getData(tab);
+            });
+        }
+
+        window.onfocus = function () {
+            return _this2.focused = true;
+        };
+        window.onblur = function () {
+            return _this2.focused = false;
+        };
     },
 
     getData: function getData(tab) {

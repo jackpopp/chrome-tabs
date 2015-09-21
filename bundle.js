@@ -19816,9 +19816,9 @@ module.exports = require('./lib/React');
 // seperate by window - done
 // add basic style - done
 // collapse window - done
-// close tab
+// close tab - done
 // switch to tab - done
-// add events
+// add events - done
 // create group
 // save group
 
@@ -19836,10 +19836,12 @@ var Tab = React.createClass({
 
     close: function close() {
         swal({
-            title: "Are you sure?",
+            title: "Close Tab",
+            text: "Are you sure?",
             showCancelButton: true,
             confirmButtonColor: "#DD6B55",
-            confirmButtonText: "Yes, delete it!",
+            confirmButtonText: "Yes, close the tab.",
+            cancelButtonText: "No",
             closeOnConfirm: true }, (function () {
             chrome.tabs.remove(this.props.id);
             this.props.onClick(this.props.id);
@@ -19856,13 +19858,13 @@ var Tab = React.createClass({
             { id: this.props.id, className: 'list-group-item' },
             React.createElement(
                 'span',
-                { className: 'pull-right', onClick: this.close },
+                { className: 'pull-right close-button', onClick: this.close },
                 'x'
             ),
             ' ',
             React.createElement(
                 'span',
-                { onClick: this['switch'] },
+                { className: 'tab-title', onClick: this['switch'] },
                 this.props.title
             )
         );
@@ -19881,7 +19883,9 @@ var Window = React.createClass({
     },
 
     toggleOpen: function toggleOpen() {
-        this.setState({ open: this.state.open ? false : true });
+        // set this is local storage so we remember everytime we render
+
+        //this.setState({ open: this.state.open ? false : true });
     },
 
     closeFunction: function closeFunction(tabId) {
@@ -19941,6 +19945,8 @@ var WindowList = React.createClass({
 
         this.getData();
 
+        // do these if the window isnt focused
+
         chrome.tabs.onCreated.addListener(function (tab) {
             _this2.getData(tab);
         });
@@ -19961,7 +19967,6 @@ var WindowList = React.createClass({
     getData: function getData(tab) {
         var _this3 = this;
 
-        console.log(tab);
         this.setState({ windows: [] });
 
         var ws = new WindowService(chrome);
@@ -19988,11 +19993,6 @@ var WindowList = React.createClass({
         );
     }
 });
-
-/*function render() {
-    document.getElementById('main').innerHTML = null;
-    React.render(<WindowList />, document.querySelector('#main'));
-}*/
 
 React.render(React.createElement(WindowList, null), document.querySelector('#main'));
 

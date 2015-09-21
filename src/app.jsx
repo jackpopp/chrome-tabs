@@ -5,6 +5,7 @@
 // close tab - done
 // switch to tab - done
 // add events - done
+// switch window when click on a tab in a different window
 // create group
 // save group
 

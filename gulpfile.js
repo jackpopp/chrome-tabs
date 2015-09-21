@@ -24,7 +24,7 @@ gulp.task('publish', function() {
 	del(['./dist/*']).then(function () {
 	    
 		return gulp.src([
-			'./mainifest.json',
+			'./manifest.json',
 			'./bundle.js',
 			'./bootstrap.min.css',
 			'icon_128.png',

@@ -4,6 +4,8 @@ var babelify = require('babelify');
 var source = require('vinyl-source-stream');
 var del = require('del');
 var zip = require('gulp-zip');
+var jsonfile = require('jsonfile');
+var prompt = require('gulp-prompt');
 
 var paths = {
   app_js: ['./src/app.jsx'],
@@ -19,7 +21,24 @@ gulp.task('js', [], function() {
     .pipe(gulp.dest('./'));
 });
 
-gulp.task('publish', function() {
+gulp.task('bump_version', function(done) {
+	var json = require('./manifest.json');
+
+	gulp.src('*').pipe(
+		prompt.prompt({
+	        type: 'input',
+	        name: 'version',
+	        message: 'Current version is '+json.version+' please enter a new version:'
+	    }, function(res) {
+	    	json.version = res.version;
+	    	jsonfile.writeFile('manifest.json', json, {spaces: 2}, function (err) {
+				done();
+			});
+	    })
+    );
+});
+
+gulp.task('publish',['bump_version'], function() {
 
 	del(['./dist/*']).then(function () {
 	    

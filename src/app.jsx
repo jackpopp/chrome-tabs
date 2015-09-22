@@ -72,7 +72,7 @@ var Window = React.createClass({
     },
 
     focusWindow: function() {
-        console.log(this.props.id);
+        chrome.windows.update(this.props.id,{focused: true});
     },
   
     render: function() {

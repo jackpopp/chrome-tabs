@@ -19819,6 +19819,7 @@ module.exports = require('./lib/React');
 // close tab - done
 // switch to tab - done
 // add events - done
+// switch window when click on a tab in a different window
 // create group
 // save group
 
@@ -19902,7 +19903,11 @@ var Window = React.createClass({
     },
 
     focusWindow: function focusWindow() {
-        console.log(this.props.id);
+        chrome.windows.update(this.props.id, { focused: true });
+        /*chrome.windows.get(this.props.id, function(window) {
+            console.log(window)
+            window.focused = true
+        });*/
     },
 
     render: function render() {
@@ -20121,9 +20126,11 @@ module.exports = (function () {
 		value: function fetch(callback) {
 			var _this = this;
 
+			var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+
 			var windows = [];
 			var promise = new Promise(function (resolver, reject) {
-				_this.chrome.windows.getAll({}, function (chromeWindows) {
+				_this.chrome.windows.getAll(options, function (chromeWindows) {
 					chromeWindows.forEach(function (chromeWinow) {
 						windows.push(chromeWinow);
 					});
